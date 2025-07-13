@@ -1,7 +1,8 @@
 const express = require('express');
 const cors = require('cors');
 const sqlite3 = require('sqlite3');
-const { open } = require('sqlite');
+const sequelize = require('./database');
+const Donation = require('./models/donation.model');
 
 const app = express();
 
@@ -12,16 +13,6 @@ const PORT = process.env.PORT || 5001;
 app.use(cors());
 // parse incoming json
 app.use(express.json());
-
-// actually init the databse.
-const dbPromise = open({
-    filename: './shelter.db',
-    driver: sqlite3.Database
-});
-
-// routes next
-
-
 
 // middlewares if any (might create a good folder if many)
 
