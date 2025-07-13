@@ -1,6 +1,7 @@
 import express, { json } from 'express';
 import cors from 'cors';
 import sequelize from './database.js';
+import Donation from './models/donation.model.js';
 
 const app = express();
 
@@ -12,7 +13,19 @@ app.use(cors());
 // parse incoming json
 app.use(json());
 
-// middlewares if any (might create a good folder if many)
+// routes (maybe another file if too many)
+
+// GET /api/donations - Fetch all donations
+app.get('/api/donations', async (req, res) => {
+    try {
+        const donations = await Donation.findAll({
+            order: [['donation_date', 'DESC']]
+        });
+        res.json(donations);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
 
 
 
