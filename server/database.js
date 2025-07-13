@@ -1,5 +1,5 @@
 // Using sequelize for a better approach than sqlite. 
-const { Sequelize } = require('sequelize');
+import { Sequelize } from 'sequelize';
 
 // Instantiate a new sequelize for use. 
 const sequelize = new Sequelize({
@@ -9,4 +9,4 @@ const sequelize = new Sequelize({
 });
 
 // Export sequelize to other files for defining models. 
-module.exports = sequelize;
+export default sequelize;

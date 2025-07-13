@@ -1,8 +1,6 @@
-const express = require('express');
-const cors = require('cors');
-const sqlite3 = require('sqlite3');
-const sequelize = require('./database');
-const Donation = require('./models/donation.model');
+import express, { json } from 'express';
+import cors from 'cors';
+import sequelize from './database.js';
 
 const app = express();
 
@@ -12,7 +10,7 @@ const PORT = process.env.PORT || 5001;
 // we want the frontend to talk.
 app.use(cors());
 // parse incoming json
-app.use(express.json());
+app.use(json());
 
 // middlewares if any (might create a good folder if many)
 
@@ -24,7 +22,20 @@ app.use(express.json());
 
 
 // start the server
-app.listen(PORT, () => {
-    // TODO: add logger
-    console.log(`Server started on ${PORT}`);
-})
+const startServer = async () => {
+    try {
+        await sequelize.authenticate();
+        console.log('Database connected.');
+
+        await sequelize.sync();
+        console.log('All models were synchronized successfully.');
+
+        app.listen(PORT, () => {
+            console.log(`Server is running on ${PORT}`);
+        });
+    } catch (error) {
+        console.error('Unable to connect to the database or start the server:', error);
+    }
+}
+
+await startServer();

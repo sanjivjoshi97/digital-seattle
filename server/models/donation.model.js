@@ -1,6 +1,6 @@
 // Donation model
-const { DataTypes } = require('sequelize');
-const sequelize = require('../database');
+import { DataTypes } from 'sequelize';
+import sequelize from '../database.js';
 
 // Define the 'Donation' model
 // This model maps to the 'donations' table in the database.
@@ -31,4 +31,4 @@ const Donation = sequelize.define('Donation', {
 });
 
 // Export the model so it can be used by our Express routes.
-module.exports = Donation;
+export default Donation;

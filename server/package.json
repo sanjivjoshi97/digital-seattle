@@ -4,7 +4,7 @@
   "description": "A backend server for digital seattle",
   "license": "ISC",
   "author": "Sanjiv Joshi",
-  "type": "commonjs",
+  "type": "module",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
