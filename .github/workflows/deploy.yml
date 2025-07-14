@@ -16,26 +16,26 @@ jobs:
       - name: Install SSH Key
         run: |
           mkdir -p ~/.ssh
-          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_ed25519
+          printf '%s\n' "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_ed25519
           chmod 600 ~/.ssh/id_ed25519
           ssh-keyscan -H ${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts
 
       - name: Deploy to server
         run: |
           ssh -i ~/.ssh/id_ed25519 -T ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }} << 'EOL'
-            cd /root/digital-seattle
-
+            cd /root/donation-tracker
+            
             echo "--> Pulling latest code..."
             git pull origin main
-
+            
             echo "--> Stopping old containers..."
             docker-compose down
-
+            
             echo "--> Building and starting new containers..."
             docker-compose up --build -d
-
+            
             echo "--> Cleaning up old docker images..."
             docker image prune -af
-
+            
             echo "--> Deployment successful!"
           EOL
