@@ -19,6 +19,9 @@ app.use(cors());
 // Middleware to parse incoming JSON requests
 app.use(json());
 
+// Required for testing
+export { app };
+
 // --- Routes Section ---
 // NOTE: These can be refactored into separate route/controller files if they grow in number
 
@@ -114,5 +117,7 @@ const startServer = async () => {
     }
 };
 
-// Start the server
-await startServer();
+// Start the server only if not test
+if (process.env.NODE_ENV !== 'test') {
+    await startServer();
+}
