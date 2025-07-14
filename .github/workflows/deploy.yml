@@ -34,7 +34,7 @@ jobs:
         run: |
           echo "--> Attempting to connect to server and deploy..."
           ssh -i ~/.ssh/id_ed25519 -T ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }} << 'EOL'
-            cd /root/donation-tracker
+            cd /root/digital-seattle
             
             echo "--> Pulling latest code..."
             git pull origin main
