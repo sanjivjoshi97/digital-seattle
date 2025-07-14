@@ -32,6 +32,9 @@ const DonationForm = ({ onSubmit, initialData = null, onCancelEdit }) => {
         donation_date: dayjs() // Default to today's date
     });
 
+    // Track errors
+    const [errors, setErrors] = useState({});
+
     // Determine if the form is in "edit mode"
     const isEditing = initialData !== null;
 
@@ -49,6 +52,25 @@ const DonationForm = ({ onSubmit, initialData = null, onCancelEdit }) => {
             resetForm();
         }
     }, [initialData]);
+
+    // Validation
+    const validate = () => {
+        let tempErrors = {};
+        if (!formData.donor_name) {
+            tempErrors.donor_name = "Donor's name is required.";
+        } else if (formData.donor_name.length < 2) {
+            tempErrors.donor_name = "Name must be at least 2 characters long.";
+        }
+        if (!formData.quantity || parseFloat(formData.quantity) <= 0) {
+            tempErrors.quantity = "Quantity or amount must be a positive number.";
+        }
+        if (!formData.donation_date || !formData.donation_date.isValid()) {
+            tempErrors.donation_date = "A valid date is required.";
+        }
+        setErrors(tempErrors);
+        // Return true if form is valid (no keys in tempErrors object)
+        return Object.keys(tempErrors).length === 0;
+    };
 
     // Handle changes in text and select fields
     const handleChange = (e) => {
@@ -77,15 +99,17 @@ const DonationForm = ({ onSubmit, initialData = null, onCancelEdit }) => {
         e.preventDefault();
 
         // Format date as a string (YYYY-MM-DD) for API compatibility
-        const submissionData = {
-            ...formData,
-            donation_date: formData.donation_date.format('YYYY-MM-DD')
-        };
+        if (validate()) {
+            const submissionData = {
+                ...formData,
+                donation_date: formData.donation_date.format('YYYY-MM-DD')
+            };
 
-        onSubmit(submissionData);
+            onSubmit(submissionData);
 
-        // Only reset form after a successful new entry (not edit)
-        if (!isEditing) resetForm();
+            // Only reset form after a successful new entry (not edit)
+            if (!isEditing) resetForm();
+        }
     };
 
     return (
@@ -108,6 +132,8 @@ const DonationForm = ({ onSubmit, initialData = null, onCancelEdit }) => {
                                 onChange={handleChange}
                                 required
                                 fullWidth
+                                error={!!errors.donor_name}
+                                helperText={errors.donor_name}
                             />
                         </Grid>
 
@@ -140,6 +166,8 @@ const DonationForm = ({ onSubmit, initialData = null, onCancelEdit }) => {
                                 onChange={handleChange}
                                 required
                                 fullWidth
+                                error={!!errors.quantity}
+                                helperText={errors.quantity}
                                 slotProps={{
                                     inputProps: {
                                         step: "0.01" // Allow decimal input
@@ -154,7 +182,14 @@ const DonationForm = ({ onSubmit, initialData = null, onCancelEdit }) => {
                                 label="Donation Date"
                                 value={formData.donation_date}
                                 onChange={handleDateChange}
-                                slotProps={{ textField: { fullWidth: true, required: true } }}
+                                slotProps={{
+                                    textField: {
+                                        fullWidth: true,
+                                        required: true,
+                                        error: !!errors.donation_date,
+                                        helperText: errors.donation_date
+                                    }
+                                }}
                             />
                         </Grid>
 
