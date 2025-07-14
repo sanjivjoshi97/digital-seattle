@@ -3,7 +3,7 @@ donations-test.duckdns.org {
 
     log
 
-    handle_path /api/* {
+    route /api/* {
         reverse_proxy server:5001
     }
 
