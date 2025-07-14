@@ -1,0 +1,13 @@
+donations-test.duckdns.org {
+    email haxor.stumped@gmail.com
+
+    log
+
+    handle_path /api/* {
+        reverse_proxy server:5001
+    }
+    
+    handle {
+        reverse_proxy client:80
+    }
+}

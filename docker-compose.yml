@@ -1,0 +1,41 @@
+services:
+  server:
+    build:
+      context: ./server
+    container_name: donation_server
+    volumes:
+      - ./server/data:/usr/src/app/data
+    environment:
+      - NODE_ENV=production
+    command: >
+      sh -c "mv shelter.db data/shelter.db 2>/dev/null || true &&
+             npm start"
+    restart: unless-stopped
+
+  client:
+    build:
+      context: ./client
+    container_name: donation_client
+    depends_on:
+      - server
+    restart: unless-stopped
+
+  caddy:
+    image: caddy:2-alpine
+    container_name: caddy_proxy
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+      - "443:443/udp"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile
+      - caddy_data:/data
+      - caddy_config:/config
+    depends_on:
+      - client
+      - server
+      
+volumes:
+  caddy_data:
+  caddy_config:
