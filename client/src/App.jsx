@@ -1,8 +1,9 @@
 // Import React hooks and components
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import * as api from './services/api'; // API service functions
 import DonationForm from './components/DonationForm.jsx'; // Form for adding/updating donations
 import DonationList from './components/DonationList.jsx'; // List of donation entries
+import DonationSummary from './components/DonationSummary.jsx'; // Make a chart summarizing donations
 
 // Import MUI components for layout and styling
 import { CssBaseline, Container, Typography, Stack, Alert } from '@mui/material';
@@ -85,6 +86,42 @@ function App() {
         }
     };
 
+    /**
+     * Summarize the donations data for the pie chart visualization.
+     * - For "Money" donations, the total dollar amount is summed.
+     * - For other types, the number of donations (count) is used.
+     */
+    const summaryData = useMemo(() => {
+        if (!donations) return [];
+
+        // Use a reducer to group donations by type
+        const summary = donations.reduce((acc, curr) => {
+            const type = curr.donation_type;
+
+            // Initialize accumulator for this type if needed
+            if (!acc[type]) {
+                acc[type] = 0;
+            }
+
+            if (type === 'Money') {
+                // Sum up monetary donations
+                acc[type] += parseFloat(curr.quantity);
+            } else {
+                // Count the number of item-type donations
+                acc[type] += 1;
+            }
+
+            return acc;
+        }, {});
+
+        // Convert summary object into array format expected by the PieChart:
+        // [{ name: 'Money', value: 100 }, { name: 'Food', value: 4 }, ...]
+        return Object.entries(summary).map(([name, value]) => ({
+            name,
+            value
+        }));
+    }, [donations]);
+
     // Render the application UI
     return (
         <>
@@ -105,6 +142,9 @@ function App() {
                     <Stack spacing={4} sx={{ mt: 4 }}>
                         {/* Display error messages if any */}
                         {error && <Alert severity="error">{error}</Alert>}
+
+                        {/* Donation summary chart */}
+                        <DonationSummary data={summaryData} />
                         
                         {/* Donation form with optional pre-filled data for editing */}
                         <DonationForm 
