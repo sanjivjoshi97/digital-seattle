@@ -4,7 +4,7 @@ A full-stack web application built for a local shelter to manage donation invent
 
 **Live Application:** [https://donations-test.duckdns.org](https://donations-test.duckdns.org)
 
-![Screenshot of the Shelter Donation Tracker](screenshot.png)
+![Screenshot of the Shelter Donation Tracker](image.png)
 
 ---
 
