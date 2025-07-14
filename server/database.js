@@ -1,12 +1,12 @@
-// Using sequelize for a better approach than sqlite. 
+// Using Sequelize ORM for better structure and flexibility than raw SQLite queries
 import { Sequelize } from 'sequelize';
 
-// Instantiate a new sequelize for use. 
+// Initialize a new Sequelize instance configured to use SQLite
 const sequelize = new Sequelize({
-    dialect: 'sqlite',
-    storage: './shelter.db',
-    logging: false  // not to log queries in logs.            
+    dialect: 'sqlite',               // Specify the database engine
+    storage: './shelter.db',         // Path to the SQLite database file
+    logging: false                   // Disable SQL query logging in the console
 });
 
-// Export sequelize to other files for defining models. 
+// Export the configured Sequelize instance for use in model definitions and DB interactions
 export default sequelize;
